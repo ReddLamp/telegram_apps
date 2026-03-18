@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <h2>Upvote Order</h2>
+
+    <label>Post URL</label><br>
+    <input id="url" type="text"><br><br>
+
+    <label>Total Upvotes</label><br>
+    <input id="upvotes" type="number"><br><br>
+
+    <label>Upvotes per hour</label><br>
+    <input id="per_hour" type="range" min="1" max="160" value="10">
+    <span id="ph_value">10</span><br><br>
+
+    <button onclick="buy()">Buy</button>
+
+    <p id="result"></p>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+
+        const slider = document.getElementById("per_hour");
+        const value = document.getElementById("ph_value");
+
+        slider.oninput = () => value.innerText = slider.value;
+
+        function buy() {
+            const payload = {
+                post_link: document.getElementById("url").value,
+                target_upvotes: parseInt(document.getElementById("upvotes").value),
+                upvotes_per_hour: parseInt(document.getElementById("per_hour").value),
+            };
+
+            const tg = window.Telegram.WebApp;
+
+            tg.sendData(JSON.stringify(payload));
+        }
+
+        tg.expand();
+    </script>
+</body>
+</html>
