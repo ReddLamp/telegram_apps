@@ -1,20 +1,133 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #0f0f0f;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        label {
+            font-size: 14px;
+            color: #a0a0a0;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            border-radius: 10px;
+            border: 1px solid #2a2a2a;
+            background: #1a1a1a;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.2s;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border: 1px solid #2ea6ff;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        #ph_value {
+            display: block;
+            margin-top: 5px;
+            color: #2ea6ff;
+            font-weight: bold;
+        }
+
+        #total {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2ea6ff;
+            margin: 10px 0 20px 0;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #2ea6ff, #1872cc);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #result {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #aaaaaa;
+        }
+
+        /* Card container */
+        body > * {
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .error_message {
+            color: rgb(197, 32, 32);
+        }
+
+        .card {
+            background: #141414;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
 <body>
-    <h2>Upvote Order</h2>
+    <div class="card">
+        <h2>Upvote Order</h2>
 
     <label>Post URL</label><br>
-    <input id="url" type="text"><br><br>
+    <input id="url" type="text">
+    <label class="error_message" id="url_text_error"></label>
+    <br><br>
+    
 
     <label>Total Upvotes</label><br>
-    <input id="upvotes" type="number"><br><br>
+    <input id="upvotes" type="number">
+    <label class="error_message" id="upvotes_text_error"></label>
+    <br><br>
 
     <label>Upvotes per hour</label><br>
     <input id="per_hour" type="range" min="1" max="160" value="10">
-    <span id="ph_value">10</span><br><br>
+    <span id="ph_value">10</span>
+    <br><br>
 
     <label>Total</label><br>
     <p id="total">0</p>
@@ -22,6 +135,8 @@
     <button onclick="buy()">Buy</button>
 
     <p id="result"></p>
+    </div>
+    
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -35,15 +150,47 @@
         slider.oninput = () => value.innerText = slider.value;
 
         upvote_input.oninput = () => {
-            total_text.innerText = upvote_input.value * 0.02;
+            const total = (upvote_input.value * 0.02).toFixed(2);
+            total_text.innerText = `${total} $`;
+        }
+
+        function isValidRedditUrl(url) {
+            const regex = /^https?:\/\/(www\.)?reddit\.com\/r\/[^\/]+\/comments\/[a-z0-9]+\/?/i;
+            return regex.test(url);
         }
 
         function buy() {
+            // Data validation
+            let invalid_data = false;
+            const url = document.getElementById("url").value;
+            if (!isValidRedditUrl(url)){
+                document.getElementById("url_text_error").innerText = "Invalid Reddit post URL";
+                invalid_data = true;
+            }
+            else{
+                document.getElementById("url_text_error").innerText = "";
+            }
+            const upvote_value = Number(upvote_input.value);
+            if (isNaN(upvote_value) || !Number.isInteger(upvote_value || upvote_value == 0)){
+                document.getElementById("upvotes_text_error").innerText = "Invalid upvote amount";
+                invalid_data = true;
+            }
+            else {
+                document.getElementById("upvotes_text_error").innerText = "";
+            }
+            
+            if (invalid_data) return;
+
             const payload = {
                 post_link: document.getElementById("url").value,
                 target_upvotes: parseInt(document.getElementById("upvotes").value),
                 upvotes_per_hour: parseInt(document.getElementById("per_hour").value),
             };
+
+            if (!payload.post_link || !payload.target_upvotes) {
+                document.getElementById("result").innerText = "Fill all fields";
+                return;
+            }
 
             const tg = window.Telegram.WebApp;
 
