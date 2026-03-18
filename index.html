@@ -16,6 +16,9 @@
     <input id="per_hour" type="range" min="1" max="160" value="10">
     <span id="ph_value">10</span><br><br>
 
+    <label>Total</label><br>
+    <p id="total">0</p>
+
     <button onclick="buy()">Buy</button>
 
     <p id="result"></p>
@@ -23,10 +26,17 @@
     <script>
         const tg = window.Telegram.WebApp;
 
+        const upvote_input = document.getElementById("upvotes")
+        const total_text = document.getElementById("total")
+        
         const slider = document.getElementById("per_hour");
         const value = document.getElementById("ph_value");
 
         slider.oninput = () => value.innerText = slider.value;
+
+        upvote_input.oninput = () => {
+            total_text.innerText = upvote_input.value * 0.02;
+        }
 
         function buy() {
             const payload = {
