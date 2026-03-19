@@ -186,9 +186,13 @@
             }
                 // Validate name
             const name_value = document.getElementById("name").value;
-            if (isNaN(name_value) || name_value == ""){
+            if (name_value === ""){
                 document.getElementById("name_text_error").innerText = "Invalid name, write your client name";
+                console.log(`Invalid ${name_value}`);
                 invalid_data = true;
+            }
+            else {
+                document.getElementById("name_text_error").innerText = "";
             }
             
             if (invalid_data) return;
