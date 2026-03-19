@@ -113,28 +113,32 @@
     <div class="card">
         <h2>Upvote Order</h2>
 
-    <label>Post URL</label><br>
-    <input id="url" type="text">
-    <label class="error_message" id="url_text_error"></label>
-    <br><br>
+        <label>Name</label><br>
+        <input id="name" type="text">
+        <label class="error_message" id="name_text_error"></label>
     
+        <label>Post URL</label><br>
+        <input id="url" type="text">
+        <label class="error_message" id="url_text_error"></label>
+        <br><br>
+        
 
-    <label>Total Upvotes</label><br>
-    <input id="upvotes" type="number">
-    <label class="error_message" id="upvotes_text_error"></label>
-    <br><br>
+        <label>Total Upvotes</label><br>
+        <input id="upvotes" type="number">
+        <label class="error_message" id="upvotes_text_error"></label>
+        <br><br>
 
-    <label>Upvotes per hour</label><br>
-    <input id="per_hour" type="range" min="1" max="160" value="10">
-    <span id="ph_value">10</span>
-    <br><br>
+        <label>Upvotes per hour</label><br>
+        <input id="per_hour" type="range" min="1" max="160" value="10">
+        <span id="ph_value">10</span>
+        <br><br>
 
-    <label>Total</label><br>
-    <p id="total">0</p>
+        <label>Total</label><br>
+        <p id="total">0</p>
 
-    <button onclick="buy()">Buy</button>
+        <button onclick="buy()">Buy</button>
 
-    <p id="result"></p>
+        <p id="result"></p>
     </div>
     
 
@@ -149,8 +153,9 @@
 
         slider.oninput = () => value.innerText = slider.value;
 
+        // Show price
         upvote_input.oninput = () => {
-            const total = (upvote_input.value * 0.02).toFixed(2);
+            const total = (upvote_input.value * 0.01).toFixed(2);
             total_text.innerText = `${total} $`;
         }
 
@@ -178,6 +183,12 @@
             else {
                 document.getElementById("upvotes_text_error").innerText = "";
             }
+                // Validate name
+            const name_value = document.getElementById("name").innerText;
+            if (isNaN(name_value) || name_value == ""){
+                document.getElementById("name_text_error").innerText = "Invalid name, write your client name";
+                invalid_data = true;
+            }
             
             if (invalid_data) return;
 
@@ -185,6 +196,7 @@
                 post_link: document.getElementById("url").value,
                 target_upvotes: parseInt(document.getElementById("upvotes").value),
                 upvotes_per_hour: parseInt(document.getElementById("per_hour").value),
+                client_name: document.getElementById("name").value
             };
 
             if (!payload.post_link || !payload.target_upvotes) {
