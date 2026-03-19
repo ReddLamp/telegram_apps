@@ -185,7 +185,7 @@
                 document.getElementById("upvotes_text_error").innerText = "";
             }
                 // Validate name
-            const name_value = document.getElementById("name").innerText;
+            const name_value = document.getElementById("name").value;
             if (isNaN(name_value) || name_value == ""){
                 document.getElementById("name_text_error").innerText = "Invalid name, write your client name";
                 invalid_data = true;
