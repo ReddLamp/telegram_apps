@@ -145,6 +145,7 @@
 
     <script>
         const tg = window.Telegram.WebApp;
+        tg.ready();
 
         const upvote_input = document.getElementById("upvotes")
         const total_text = document.getElementById("total")
@@ -208,8 +209,6 @@
                 document.getElementById("result").innerText = "Fill all fields";
                 return;
             }
-
-            const tg = window.Telegram.WebApp;
 
             tg.sendData(JSON.stringify(payload));
         }
