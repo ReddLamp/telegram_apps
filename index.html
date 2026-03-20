@@ -137,7 +137,7 @@
         <label>Total</label><br>
         <p id="total">0</p>
 
-        <button id="buy_btn" type="button">Buy</button>
+        <!--<button id="buy_btn" type="button">Buy</button>-->
 
         <p id="result"></p>
     </div>
@@ -153,7 +153,12 @@
         const slider = document.getElementById("per_hour");
         const value = document.getElementById("ph_value");
 
-        const buy_btn = document.getElementById("buy_btn")
+
+        tg.MainButton.setText("Buy");
+        tg.MainButton.show();
+        tg.MainButton.onClick(buy);
+
+        //const buy_btn = document.getElementById("buy_btn")
 
         slider.oninput = () => value.innerText = slider.value;
 
@@ -168,7 +173,7 @@
             return regex.test(url);
         }
         
-        buy_btn.addEventListener("click", buy);
+        //buy_btn.addEventListener("click", buy);
         function buy() {
             // Data validation
             let invalid_data = false;
