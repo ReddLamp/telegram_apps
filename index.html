@@ -173,6 +173,10 @@
             const total = ((upvote_input.value + comment_input.value) * 0.01).toFixed(2);
             total_text.innerText = `${total} $`;
         }
+        comment_input.oninput = () => {
+            const total = ((upvote_input.value + comment_input.value) * 0.01).toFixed(2);
+            total_text.innerText = `${total} $`;
+        }
 
         function isValidRedditUrl(url) {
             const regex = /^https?:\/\/(www\.)?reddit\.com\/r\/[^\/]+\/comments\/[a-z0-9]+\/?/i;
@@ -192,7 +196,7 @@
                 document.getElementById("url_text_error").innerText = "";
             }
             const upvote_value = Number(upvote_input.value);
-            if (isNaN(upvote_value) || !Number.isInteger(upvote_value) || upvote_value <= 0){
+            if (isNaN(upvote_value) || !Number.isInteger(upvote_value) || upvote_value < 0){
                 document.getElementById("upvotes_text_error").innerText = "Invalid upvote amount";
                 invalid_data = true;
             }
@@ -200,7 +204,7 @@
                 document.getElementById("upvotes_text_error").innerText = "";
             }
             const comment_value = Number(comment_input.value);
-            if (isNaN(upvote_value) || !Number.isInteger(upvote_value) || upvote_value <= 0){
+            if (isNaN(upvote_value) || !Number.isInteger(upvote_value) || upvote_value < 0){
                 document.getElementById("comments_text_error").innerText = "Invalid comments amount";
                 invalid_data = true;
             }
