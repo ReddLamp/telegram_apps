@@ -129,6 +129,11 @@
         <label class="error_message" id="upvotes_text_error"></label>
         <br><br>
 
+        <label>Total Comments</label><br>
+        <input id="comments" type="number">
+        <label class="error_message" id="comments_text_error"></label>
+        <br><br>
+
         <label>Upvotes per hour</label><br>
         <input id="per_hour" type="range" min="1" max="160" value="10">
         <span id="ph_value">10</span>
@@ -148,6 +153,7 @@
         tg.ready();
 
         const upvote_input = document.getElementById("upvotes")
+        const comment_input = document.getElementById("comments")
         const total_text = document.getElementById("total")
         
         const slider = document.getElementById("per_hour");
@@ -164,7 +170,7 @@
 
         // Show price
         upvote_input.oninput = () => {
-            const total = (upvote_input.value * 0.01).toFixed(2);
+            const total = ((upvote_input.value + comment_input.value) * 0.01).toFixed(2);
             total_text.innerText = `${total} $`;
         }
 
@@ -193,6 +199,14 @@
             else {
                 document.getElementById("upvotes_text_error").innerText = "";
             }
+            const comment_value = Number(comment_input.value);
+            if (isNaN(upvote_value) || !Number.isInteger(upvote_value) || upvote_value <= 0){
+                document.getElementById("comments_text_error").innerText = "Invalid comments amount";
+                invalid_data = true;
+            }
+            else {
+                document.getElementById("comments_text_error").innerText = "";
+            }
                 // Validate name
             const name_value = document.getElementById("name").value;
             if (name_value === ""){
@@ -209,6 +223,7 @@
             const payload = {
                 post_link: document.getElementById("url").value,
                 target_upvotes: parseInt(document.getElementById("upvotes").value),
+                target_comments: parseInt(document.getElementById("comments").value),
                 upvotes_per_hour: parseInt(document.getElementById("per_hour").value),
                 client_name: document.getElementById("name").value
             };
