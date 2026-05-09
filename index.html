@@ -232,7 +232,7 @@
                 client_name: document.getElementById("name").value
             };
 
-            if (!payload.post_link || !payload.target_upvotes) {
+            if (!payload.post_link || payload.target_upvotes < 0) {
                 document.getElementById("result").innerText = "Fill all fields";
                 return;
             }
