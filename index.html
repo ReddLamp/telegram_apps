@@ -358,12 +358,6 @@
     <!-- Comments panel -->
     <div class="fields-panel" id="panel-comments">
       <div class="field-group">
-        <label class="field-label" for="comment-amount">Number of comments</label>
-        <input class="field-input" id="comment-amount" type="number" min="1" placeholder="e.g. 25" oninput="updatePrice()">
-        <span class="field-error" id="err-comment-amount"></span>
-      </div>
-
-      <div class="field-group">
         <label class="field-label" for="comment-text">Comment text</label>
         <textarea class="field-input" id="comment-text"
           placeholder="Write the comment to post..."></textarea>
@@ -413,8 +407,9 @@
         const amt = parseInt(document.getElementById('upvote-amount').value) || 0;
         el.textContent = amt > 0 ? '$' + (amt * 0.01).toFixed(2) : '—';
       } else if (currentType === 'comments') {
-        const amt = parseInt(document.getElementById('comment-amount').value) || 0;
-        el.textContent = amt > 0 ? '$' + (amt * 0.05).toFixed(2) : '—';
+        const lines = document.getElementById('comment-text').value.split('\n').length;
+        const amt = parseInt(lines * 0.1) || 0;
+        el.textContent = amt > 0 ? '$' + (amt * 0.1).toFixed(2) : '—';
       } else {
         el.textContent = '—';
       }
