@@ -212,7 +212,7 @@
     }
 
     .fields-panel.active {
-      display: block;
+      display: block !important;
     }
 
     @keyframes fadeIn {
@@ -261,25 +261,6 @@
       color: var(--text-primary);
       font-family: 'DM Mono', monospace;
     }
-
-    .submit-btn {
-      width: 100%;
-      padding: 13px;
-      background: var(--text-primary);
-      color: var(--bg);
-      border: none;
-      border-radius: var(--radius-md);
-      font-size: 14px;
-      font-weight: 500;
-      font-family: 'DM Sans', system-ui, sans-serif;
-      cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
-      letter-spacing: 0.01em;
-    }
-
-    .submit-btn:hover  { opacity: 0.85; }
-    .submit-btn:active { transform: scale(0.99); }
-    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .success-banner {
       display: none;
@@ -408,8 +389,7 @@
         el.textContent = amt > 0 ? '$' + (amt * 0.01).toFixed(2) : '—';
       } else if (currentType === 'comments') {
         const lines = document.getElementById('comment-text').value.split('\n').length;
-        const amt = parseInt(lines * 0.1) || 0;
-        el.textContent = amt > 0 ? '$' + (amt * 0.1).toFixed(2) : '—';
+        el.textContent = lines > 0 ? '$' + (lines * 0.1).toFixed(2) : '—';
       } else {
         el.textContent = '—';
       }
@@ -461,7 +441,8 @@
         payload.target_upvotes    = parseInt(document.getElementById('upvote-amount').value);
         payload.upvotes_per_hour  = parseInt(document.getElementById('upvote-speed').value);
       } else {
-        payload.target_comments = parseInt(document.getElementById('comment-amount').value);
+        const lines = document.getElementById('comment-text').value.split('\n').length;
+        payload.target_comments = lines;
         payload.comment_text    = document.getElementById('comment-text').value.trim();
       }
 
@@ -472,7 +453,6 @@
       }
 
       document.getElementById('success-banner').style.display = 'block';
-      document.getElementById('submit-btn').disabled = true;
     }
   </script>
 
