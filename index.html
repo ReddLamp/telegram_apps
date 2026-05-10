@@ -359,7 +359,7 @@
     <div class="fields-panel" id="panel-comments">
       <div class="field-group">
         <label class="field-label" for="comment-text">Comment text</label>
-        <textarea class="field-input" id="comment-text"
+        <textarea class="field-input" id="comment-text" oninput="updatePrice()"
           placeholder="Write the comment to post..."></textarea>
         <span class="field-error" id="err-comment-text"></span>
       </div>
@@ -445,8 +445,6 @@
       }
 
       if (currentType === 'comments') {
-        const amt = parseInt(document.getElementById('comment-amount').value);
-        invalid |= setErr('err-comment-amount', amt > 0 ? '' : 'Enter a valid number of comments.');
         const txt = document.getElementById('comment-text').value.trim();
         invalid |= setErr('err-comment-text', txt ? '' : 'Provide comment text or instructions.');
       }
