@@ -1,251 +1,489 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reddit Order Form</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #0f0f0f;
-            color: #ffffff;
-            margin: 0;
-            padding: 20px;
-        }
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        h2 {
-            margin-bottom: 20px;
-            font-weight: 600;
-            text-align: center;
-        }
+    :root {
+      --bg: #ffffff;
+      --bg-secondary: #f5f5f3;
+      --bg-info: #e6f1fb;
+      --text-primary: #1a1a18;
+      --text-secondary: #6b6b67;
+      --text-tertiary: #9e9e9a;
+      --text-info: #185fa5;
+      --text-danger: #a32d2d;
+      --text-success: #3b6d11;
+      --border: rgba(0,0,0,0.15);
+      --border-strong: rgba(0,0,0,0.3);
+      --border-info: #378add;
+      --border-danger: #e24b4a;
+      --border-success: #639922;
+      --bg-success: #eaf3de;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
 
-        label {
-            font-size: 14px;
-            color: #a0a0a0;
-        }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1c1a;
+        --bg-secondary: #252523;
+        --bg-info: #0c447c;
+        --text-primary: #f0ede8;
+        --text-secondary: #a0a09a;
+        --text-tertiary: #6b6b65;
+        --text-info: #85b7eb;
+        --text-danger: #f09595;
+        --text-success: #97c459;
+        --border: rgba(255,255,255,0.15);
+        --border-strong: rgba(255,255,255,0.3);
+        --border-info: #378add;
+        --border-danger: #e24b4a;
+        --border-success: #639922;
+        --bg-success: #173404;
+      }
+    }
 
-        input[type="text"],
-        input[type="number"] {
-            width: 100%;
-            padding: 12px;
-            margin-top: 6px;
-            margin-bottom: 16px;
-            border-radius: 10px;
-            border: 1px solid #2a2a2a;
-            background: #1a1a1a;
-            color: white;
-            font-size: 14px;
-            outline: none;
-            transition: border 0.2s;
-            box-sizing: border-box;
-        }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
 
-        input:focus {
-            border: 1px solid #2ea6ff;
-        }
+    .card {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      width: 100%;
+      max-width: 480px;
+    }
 
-        input[type="range"] {
-            width: 100%;
-            margin-top: 10px;
-        }
+    .order-header {
+      margin-bottom: 1.75rem;
+    }
 
-        #ph_value {
-            display: block;
-            margin-top: 5px;
-            color: #2ea6ff;
-            font-weight: bold;
-        }
+    .order-header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+    }
 
-        #total {
-            font-size: 20px;
-            font-weight: bold;
-            color: #2ea6ff;
-            margin: 10px 0 20px 0;
-        }
+    .order-header p {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
 
-        button {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: none;
-            background: linear-gradient(135deg, #2ea6ff, #1872cc);
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
-        }
+    .field-group {
+      margin-bottom: 1.25rem;
+    }
 
-        button:hover {
-            opacity: 0.9;
-        }
+    .field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
 
-        button:active {
-            transform: scale(0.98);
-        }
+    .field-input {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      border: 0.5px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
 
-        #result {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #aaaaaa;
-        }
+    .field-input:focus {
+      border-color: var(--border-info);
+      box-shadow: 0 0 0 3px rgba(55, 138, 221, 0.15);
+    }
 
-        /* Card container */
-        body > * {
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+    .field-input.error {
+      border-color: var(--border-danger);
+    }
 
-        .error_message {
-            color: rgb(197, 32, 32);
-        }
+    textarea.field-input {
+      resize: vertical;
+      min-height: 90px;
+      line-height: 1.5;
+    }
 
-        .card {
-            background: #141414;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-    </style>
+    .field-error {
+      display: block;
+      font-size: 12px;
+      color: var(--text-danger);
+      margin-top: 5px;
+      min-height: 16px;
+    }
+
+    .url-hint {
+      display: block;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 0.5px solid var(--border);
+      margin: 1.5rem 0;
+    }
+
+    .type-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .type-btn {
+      padding: 14px 12px;
+      background: var(--bg);
+      border: 0.5px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+      color: var(--text-primary);
+      font-family: 'DM Sans', system-ui, sans-serif;
+    }
+
+    .type-btn .type-icon {
+      font-size: 20px;
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+    }
+
+    .type-btn .type-name {
+      font-size: 14px;
+      font-weight: 500;
+      display: block;
+      color: var(--text-primary);
+    }
+
+    .type-btn .type-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .type-btn.selected {
+      border: 2px solid var(--border-info);
+      background: var(--bg-info);
+    }
+
+    .type-btn.selected .type-icon,
+    .type-btn.selected .type-name {
+      color: var(--text-info);
+    }
+
+    .type-btn.selected .type-desc {
+      color: var(--text-info);
+      opacity: 0.8;
+    }
+
+    .fields-panel {
+      display: none;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .fields-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .speed-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .speed-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--border-info);
+    }
+
+    .speed-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-info);
+      min-width: 54px;
+      text-align: right;
+    }
+
+    .price-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .price-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .price-value {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 13px;
+      background: var(--text-primary);
+      color: var(--bg);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      letter-spacing: 0.01em;
+    }
+
+    .submit-btn:hover  { opacity: 0.85; }
+    .submit-btn:active { transform: scale(0.99); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .success-banner {
+      display: none;
+      background: var(--bg-success);
+      border: 0.5px solid var(--border-success);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--text-success);
+      margin-top: 1rem;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Upvote Order</h2>
 
-        <label>Name</label><br>
-        <input id="name" type="text">
-        <label class="error_message" id="name_text_error"></label>
-        <br><br>
-    
-        <label>Post URL</label><br>
-        <input id="url" type="text">
-        <label class="error_message" id="url_text_error"></label>
-        <br><br>
-        
-
-        <label>Total Upvotes</label><br>
-        <input id="upvotes" type="number">
-        <label class="error_message" id="upvotes_text_error"></label>
-        <br><br>
-
-        <label>Total Comments</label><br>
-        <input id="comments" type="number">
-        <label class="error_message" id="comments_text_error"></label>
-        <br><br>
-
-        <label>Upvotes per hour</label><br>
-        <input id="per_hour" type="range" min="1" max="160" value="10">
-        <span id="ph_value">10</span>
-        <br><br>
-
-        <label>Total</label><br>
-        <p id="total">0</p>
-
-        <!--<button id="buy_btn" type="button">Buy</button>-->
-
-        <p id="result"></p>
+  <div class="card">
+    <div class="order-header">
+      <h1>New order</h1>
+      <p>Promote your Reddit post with upvotes or comments.</p>
     </div>
-    
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
+    <!-- Client name -->
+    <div class="field-group">
+      <label class="field-label" for="client-name">Client name</label>
+      <input class="field-input" id="client-name" type="text" placeholder="Your name or handle">
+      <span class="field-error" id="err-name"></span>
+    </div>
 
-        const upvote_input = document.getElementById("upvotes")
-        const comment_input = document.getElementById("comments")
-        const total_text = document.getElementById("total")
-        
-        const slider = document.getElementById("per_hour");
-        const value = document.getElementById("ph_value");
+    <!-- Post URL -->
+    <div class="field-group">
+      <label class="field-label" for="post-url">Reddit post URL</label>
+      <input class="field-input" id="post-url" type="text" placeholder="https://reddit.com/r/…/comments/…">
+      <span class="url-hint">Must be a valid reddit.com/r/… post link</span>
+      <span class="field-error" id="err-url"></span>
+    </div>
 
+    <hr class="divider">
 
-        tg.MainButton.setText("Buy");
-        tg.MainButton.show();
-        tg.MainButton.onClick(buy);
+    <!-- Order type selector -->
+    <div class="field-group">
+      <label class="field-label">Order type</label>
+      <div class="type-selector">
+        <button class="type-btn" id="btn-upvotes" onclick="selectType('upvotes')" type="button">
+          <i class="ti ti-arrow-big-up type-icon" aria-hidden="true"></i>
+          <span class="type-name">Upvotes</span>
+          <span class="type-desc">Boost post score</span>
+        </button>
+        <button class="type-btn" id="btn-comments" onclick="selectType('comments')" type="button">
+          <i class="ti ti-message-circle type-icon" aria-hidden="true"></i>
+          <span class="type-name">Comments</span>
+          <span class="type-desc">Add engagement</span>
+        </button>
+      </div>
+      <span class="field-error" id="err-type"></span>
+    </div>
 
-        //const buy_btn = document.getElementById("buy_btn")
+    <!-- Upvotes panel -->
+    <div class="fields-panel" id="panel-upvotes">
+      <div class="field-group">
+        <label class="field-label" for="upvote-amount">Number of upvotes</label>
+        <input class="field-input" id="upvote-amount" type="number" min="1" placeholder="e.g. 500" oninput="updatePrice()">
+        <span class="field-error" id="err-upvote-amount"></span>
+      </div>
 
-        slider.oninput = () => value.innerText = slider.value;
+      <div class="field-group">
+        <label class="field-label">Upvote speed <span style="font-weight:400;text-transform:none;letter-spacing:0">(per hour)</span></label>
+        <div class="speed-row">
+          <input type="range" id="upvote-speed" min="1" max="160" value="20" step="1"
+            oninput="document.getElementById('speed-val').textContent = this.value + '/hr'">
+          <span class="speed-value" id="speed-val">20/hr</span>
+        </div>
+      </div>
+    </div>
 
-        // Show price
-        upvote_input.oninput = () => {
-            const total = ((upvote_input.value + comment_input.value) * 0.01).toFixed(2);
-            total_text.innerText = `${total} $`;
-        }
-        comment_input.oninput = () => {
-            const total = ((upvote_input.value + comment_input.value) * 0.01).toFixed(2);
-            total_text.innerText = `${total} $`;
-        }
+    <!-- Comments panel -->
+    <div class="fields-panel" id="panel-comments">
+      <div class="field-group">
+        <label class="field-label" for="comment-amount">Number of comments</label>
+        <input class="field-input" id="comment-amount" type="number" min="1" placeholder="e.g. 25" oninput="updatePrice()">
+        <span class="field-error" id="err-comment-amount"></span>
+      </div>
 
-        function isValidRedditUrl(url) {
-            const regex = /^https?:\/\/(www\.)?reddit\.com\/r\/[^\/]+\/comments\/[a-z0-9]+\/?/i;
-            return regex.test(url);
-        }
-        
-        //buy_btn.addEventListener("click", buy);
-        function buy() {
-            // Data validation
-            let invalid_data = false;
-            const url = document.getElementById("url").value;
-            if (!isValidRedditUrl(url)){
-                document.getElementById("url_text_error").innerText = "Invalid Reddit post URL";
-                invalid_data = true;
-            }
-            else{
-                document.getElementById("url_text_error").innerText = "";
-            }
-            const upvote_value = Number(upvote_input.value);
-            if (isNaN(upvote_value) || !Number.isInteger(upvote_value) || upvote_value < 0){
-                document.getElementById("upvotes_text_error").innerText = "Invalid upvote amount";
-                invalid_data = true;
-            }
-            else {
-                document.getElementById("upvotes_text_error").innerText = "";
-            }
-            const comment_value = Number(comment_input.value);
-            if (isNaN(upvote_value) || !Number.isInteger(upvote_value) || upvote_value < 0){
-                document.getElementById("comments_text_error").innerText = "Invalid comments amount";
-                invalid_data = true;
-            }
-            else {
-                document.getElementById("comments_text_error").innerText = "";
-            }
-                // Validate name
-            const name_value = document.getElementById("name").value;
-            if (name_value === ""){
-                document.getElementById("name_text_error").innerText = "Invalid name, write your client name";
-                console.log(`Invalid ${name_value}`);
-                invalid_data = true;
-            }
-            else {
-                document.getElementById("name_text_error").innerText = "";
-            }
-            
-            if (invalid_data) return;
+      <div class="field-group">
+        <label class="field-label" for="comment-text">Comment text / instructions</label>
+        <textarea class="field-input" id="comment-text"
+          placeholder="Describe the tone, topic, or paste a sample comment…"></textarea>
+        <span class="field-error" id="err-comment-text"></span>
+      </div>
+    </div>
 
-            const payload = {
-                post_link: document.getElementById("url").value,
-                target_upvotes: parseInt(document.getElementById("upvotes").value),
-                target_comments: parseInt(document.getElementById("comments").value),
-                upvotes_per_hour: parseInt(document.getElementById("per_hour").value),
-                client_name: document.getElementById("name").value
-            };
+    <hr class="divider">
 
-            if (!payload.post_link || payload.target_upvotes < 0) {
-                document.getElementById("result").innerText = "Fill all fields";
-                return;
-            }
+    <!-- Price estimate -->
+    <div class="price-card">
+      <span class="price-label">Estimated total</span>
+      <span class="price-value" id="price-display">—</span>
+    </div>
 
-            try {
-                tg.sendData(JSON.stringify(payload));
-                alert("Data sent");
-            } catch (e) {
-                alert("Error: " + e);
-            }
-        }
+    <button class="submit-btn" id="submit-btn" onclick="submitOrder()" type="button">Place order</button>
 
-        tg.expand();
-    </script>
+    <div class="success-banner" id="success-banner">
+      <i class="ti ti-circle-check" aria-hidden="true"></i> Order submitted successfully!
+    </div>
+  </div>
+
+  <script>
+    // Telegram Mini App setup (safe to call even outside Telegram)
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      tg.MainButton.setText("Place order");
+      tg.MainButton.show();
+      tg.MainButton.onClick(submitOrder);
+    }
+
+    let currentType = null;
+
+    function selectType(type) {
+      currentType = type;
+      ['upvotes', 'comments'].forEach(t => {
+        document.getElementById('btn-' + t).classList.toggle('selected', t === type);
+        document.getElementById('panel-' + t).classList.toggle('active', t === type);
+      });
+      document.getElementById('err-type').textContent = '';
+      updatePrice();
+    }
+
+    function updatePrice() {
+      const el = document.getElementById('price-display');
+      if (currentType === 'upvotes') {
+        const amt = parseInt(document.getElementById('upvote-amount').value) || 0;
+        el.textContent = amt > 0 ? '$' + (amt * 0.01).toFixed(2) : '—';
+      } else if (currentType === 'comments') {
+        const amt = parseInt(document.getElementById('comment-amount').value) || 0;
+        el.textContent = amt > 0 ? '$' + (amt * 0.05).toFixed(2) : '—';
+      } else {
+        el.textContent = '—';
+      }
+    }
+
+    function isValidRedditUrl(url) {
+      return /^https?:\/\/(www\.)?reddit\.com\/r\/[^\/]+\/comments\/[a-z0-9]+/i.test(url);
+    }
+
+    function setErr(id, msg) {
+      document.getElementById(id).textContent = msg;
+      const input = document.getElementById(id)
+        .closest?.('.field-group')
+        ?.querySelector('.field-input');
+      if (input) input.classList.toggle('error', !!msg);
+      return !!msg;
+    }
+
+    function submitOrder() {
+      let invalid = false;
+
+      const name = document.getElementById('client-name').value.trim();
+      invalid |= setErr('err-name', name ? '' : 'Please enter a client name.');
+
+      const url = document.getElementById('post-url').value.trim();
+      invalid |= setErr('err-url', isValidRedditUrl(url) ? '' : 'Enter a valid Reddit post URL.');
+
+      invalid |= setErr('err-type', currentType ? '' : 'Select an order type.');
+
+      if (currentType === 'upvotes') {
+        const amt = parseInt(document.getElementById('upvote-amount').value);
+        invalid |= setErr('err-upvote-amount', amt > 0 ? '' : 'Enter a valid number of upvotes.');
+      }
+
+      if (currentType === 'comments') {
+        const amt = parseInt(document.getElementById('comment-amount').value);
+        invalid |= setErr('err-comment-amount', amt > 0 ? '' : 'Enter a valid number of comments.');
+        const txt = document.getElementById('comment-text').value.trim();
+        invalid |= setErr('err-comment-text', txt ? '' : 'Provide comment text or instructions.');
+      }
+
+      if (invalid) return;
+
+      const payload = {
+        client_name: document.getElementById('client-name').value.trim(),
+        post_link: document.getElementById('post-url').value.trim(),
+        type: currentType,
+      };
+
+      if (currentType === 'upvotes') {
+        payload.target_upvotes    = parseInt(document.getElementById('upvote-amount').value);
+        payload.upvotes_per_hour  = parseInt(document.getElementById('upvote-speed').value);
+      } else {
+        payload.target_comments = parseInt(document.getElementById('comment-amount').value);
+        payload.comment_text    = document.getElementById('comment-text').value.trim();
+      }
+
+      try {
+        if (tg) tg.sendData(JSON.stringify(payload));
+      } catch (e) {
+        console.error('Telegram sendData error:', e);
+      }
+
+      document.getElementById('success-banner').style.display = 'block';
+      document.getElementById('submit-btn').disabled = true;
+    }
+  </script>
+
 </body>
 </html>
