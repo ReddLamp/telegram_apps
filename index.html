@@ -364,9 +364,9 @@
       </div>
 
       <div class="field-group">
-        <label class="field-label" for="comment-text">Comment text / instructions</label>
+        <label class="field-label" for="comment-text">Comment text</label>
         <textarea class="field-input" id="comment-text"
-          placeholder="Describe the tone, topic, or paste a sample comment…"></textarea>
+          placeholder="Write the comment to post..."></textarea>
         <span class="field-error" id="err-comment-text"></span>
       </div>
     </div>
@@ -375,11 +375,9 @@
 
     <!-- Price estimate -->
     <div class="price-card">
-      <span class="price-label">Estimated total</span>
+      <span class="price-label">Total</span>
       <span class="price-value" id="price-display">—</span>
     </div>
-
-    <button class="submit-btn" id="submit-btn" onclick="submitOrder()" type="button">Place order</button>
 
     <div class="success-banner" id="success-banner">
       <i class="ti ti-circle-check" aria-hidden="true"></i> Order submitted successfully!
@@ -392,7 +390,7 @@
     if (tg) {
       tg.ready();
       tg.expand();
-      tg.MainButton.setText("Place order");
+      tg.MainButton.setText("Send order");
       tg.MainButton.show();
       tg.MainButton.onClick(submitOrder);
     }
