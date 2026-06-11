@@ -63,6 +63,7 @@
       padding: 2rem 1rem;
     }
 
+    /* ── CARD ── */
     .card {
       background: var(--bg);
       border: 0.5px solid var(--border);
@@ -72,23 +73,78 @@
       max-width: 480px;
     }
 
-    .order-header {
+    /* ── SCREEN SWITCHING ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── LOGIN ── */
+    .login-header {
       margin-bottom: 1.75rem;
     }
-
-    .order-header h1 {
+    .login-header h1 {
       font-size: 22px;
       font-weight: 600;
-      color: var(--text-primary);
       letter-spacing: -0.3px;
       margin-bottom: 4px;
     }
-
-    .order-header p {
+    .login-header p {
       font-size: 13px;
       color: var(--text-secondary);
     }
 
+    /* ── ORDER HEADER ── */
+    .order-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 1.75rem;
+    }
+    .order-header-text h1 {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+    }
+    .order-header-text p {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Balance chip */
+    .balance-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border-strong);
+      border-radius: 99px;
+      padding: 5px 11px 5px 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .balance-chip i {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .balance-chip .balance-label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .balance-chip .balance-amount {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .balance-chip .balance-amount.loading {
+      color: var(--text-tertiary);
+    }
+
+    /* ── SHARED FIELDS ── */
     .field-group {
       margin-bottom: 1.25rem;
     }
@@ -152,6 +208,28 @@
       margin: 1.5rem 0;
     }
 
+    /* ── LOGIN BUTTON ── */
+    .btn-primary {
+      width: 100%;
+      padding: 11px 16px;
+      background: var(--text-primary);
+      color: var(--bg);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: opacity 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* ── TYPE SELECTOR ── */
     .type-selector {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -206,6 +284,7 @@
       opacity: 0.8;
     }
 
+    /* ── PANELS ── */
     .fields-panel {
       display: none;
       animation: fadeIn 0.2s ease;
@@ -220,6 +299,7 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* ── SPEED SLIDER ── */
     .speed-row {
       display: flex;
       align-items: center;
@@ -240,6 +320,7 @@
       text-align: right;
     }
 
+    /* ── PRICE ── */
     .price-card {
       background: var(--bg-secondary);
       border-radius: var(--radius-md);
@@ -273,105 +354,306 @@
       margin-top: 1rem;
       text-align: center;
     }
+
+    /* ── LOGIN ERROR BANNER ── */
+    .login-error {
+      display: none;
+      background: #fdf0f0;
+      border: 0.5px solid var(--border-danger);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--text-danger);
+      margin-bottom: 1rem;
+    }
+    @media (prefers-color-scheme: dark) {
+      .login-error { background: #2a1010; }
+    }
+
+    /* ── PASSWORD WRAPPER ── */
+    .pw-wrap {
+      position: relative;
+    }
+    .pw-wrap .field-input {
+      padding-right: 40px;
+    }
+    .pw-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-tertiary);
+      font-size: 16px;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+    }
+    .pw-toggle:hover { color: var(--text-secondary); }
   </style>
 </head>
 <body>
 
   <div class="card">
-    <div class="order-header">
-      <h1>New order</h1>
-      <p>Promote your Reddit post with upvotes or comments.</p>
-    </div>
 
-    <!-- Client name -->
-    <div class="field-group">
-      <label class="field-label" for="client-name">Client name</label>
-      <input class="field-input" id="client-name" type="text" placeholder="Your name or handle">
-      <span class="field-error" id="err-name"></span>
-    </div>
-
-    <!-- Post URL -->
-    <div class="field-group">
-      <label class="field-label" for="post-url">Reddit post URL</label>
-      <input class="field-input" id="post-url" type="text" placeholder="https://reddit.com/r/…/comments/…">
-      <span class="url-hint">Must be a valid reddit.com/r/… post link</span>
-      <span class="field-error" id="err-url"></span>
-    </div>
-
-    <hr class="divider">
-
-    <!-- Order type selector -->
-    <div class="field-group">
-      <label class="field-label">Order type</label>
-      <div class="type-selector">
-        <button class="type-btn" id="btn-upvotes" onclick="selectType('upvotes')" type="button">
-          <i class="ti ti-arrow-big-up type-icon" aria-hidden="true"></i>
-          <span class="type-name">Upvotes</span>
-          <span class="type-desc">Boost post score</span>
-        </button>
-        <button class="type-btn" id="btn-comments" onclick="selectType('comments')" type="button">
-          <i class="ti ti-message-circle type-icon" aria-hidden="true"></i>
-          <span class="type-name">Comments</span>
-          <span class="type-desc">Add engagement</span>
-        </button>
+    <!-- ════════════════ LOGIN SCREEN ════════════════ -->
+    <div class="screen active" id="screen-login">
+      <div class="login-header">
+        <h1>Sign in</h1>
+        <p>Enter your credentials to access the order form.</p>
       </div>
-      <span class="field-error" id="err-type"></span>
-    </div>
 
-    <!-- Upvotes panel -->
-    <div class="fields-panel" id="panel-upvotes">
-      <div class="field-group">
-        <label class="field-label" for="upvote-amount">Number of upvotes</label>
-        <input class="field-input" id="upvote-amount" type="number" min="1" placeholder="e.g. 500" oninput="updatePrice()">
-        <span class="field-error" id="err-upvote-amount"></span>
+      <div class="login-error" id="login-error">
+        <i class="ti ti-alert-circle"></i> <span id="login-error-msg">Invalid username or password.</span>
       </div>
 
       <div class="field-group">
-        <label class="field-label">Upvote speed <span style="font-weight:400;text-transform:none;letter-spacing:0">(per hour)</span></label>
-        <div class="speed-row">
-          <input type="range" id="upvote-speed" min="1" max="160" value="20" step="1"
-            oninput="document.getElementById('speed-val').textContent = this.value + '/hr'">
-          <span class="speed-value" id="speed-val">20/hr</span>
+        <label class="field-label" for="login-username">Username</label>
+        <input class="field-input" id="login-username" type="text" placeholder="Your handle" autocomplete="username">
+        <span class="field-error" id="err-login-username"></span>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="login-password">Password</label>
+        <div class="pw-wrap">
+          <input class="field-input" id="login-password" type="password" placeholder="••••••••" autocomplete="current-password">
+          <button class="pw-toggle" type="button" onclick="togglePassword()" aria-label="Toggle password visibility">
+            <i class="ti ti-eye" id="pw-icon"></i>
+          </button>
+        </div>
+        <span class="field-error" id="err-login-password"></span>
+      </div>
+
+      <button class="btn-primary" id="login-btn" onclick="doLogin()" type="button">
+        <i class="ti ti-login"></i> Sign in
+      </button>
+    </div>
+
+    <!-- ════════════════ ORDER SCREEN ════════════════ -->
+    <div class="screen" id="screen-order">
+
+      <div class="order-header">
+        <div class="order-header-text">
+          <h1>New order</h1>
+          <p>Promote your Reddit post with upvotes or comments.</p>
+        </div>
+        <div class="balance-chip" id="balance-chip">
+          <i class="ti ti-wallet"></i>
+          <span class="balance-label">Balance</span>
+          <span class="balance-amount loading" id="balance-display">…</span>
         </div>
       </div>
-    </div>
 
-    <!-- Comments panel -->
-    <div class="fields-panel" id="panel-comments">
+      <!-- Client name -->
       <div class="field-group">
-        <label class="field-label" for="comment-text">Comment text</label>
-        <textarea class="field-input" id="comment-text" oninput="updatePrice()"
-          placeholder="Write the comment to post..."></textarea>
-        <span class="field-error" id="err-comment-text"></span>
+        <label class="field-label" for="client-name">Client name</label>
+        <input class="field-input" id="client-name" type="text" placeholder="Your name or handle">
+        <span class="field-error" id="err-name"></span>
       </div>
-    </div>
 
-    <hr class="divider">
+      <!-- Post URL -->
+      <div class="field-group">
+        <label class="field-label" for="post-url">Reddit post URL</label>
+        <input class="field-input" id="post-url" type="text" placeholder="https://reddit.com/r/…/comments/…">
+        <span class="url-hint">Must be a valid reddit.com/r/… post link</span>
+        <span class="field-error" id="err-url"></span>
+      </div>
 
-    <!-- Price estimate -->
-    <div class="price-card">
-      <span class="price-label">Total</span>
-      <span class="price-value" id="price-display">—</span>
-    </div>
+      <hr class="divider">
 
-    <div class="success-banner" id="success-banner">
-      <i class="ti ti-circle-check" aria-hidden="true"></i> Order submitted successfully!
-    </div>
-  </div>
+      <!-- Order type selector -->
+      <div class="field-group">
+        <label class="field-label">Order type</label>
+        <div class="type-selector">
+          <button class="type-btn" id="btn-upvotes" onclick="selectType('upvotes')" type="button">
+            <i class="ti ti-arrow-big-up type-icon" aria-hidden="true"></i>
+            <span class="type-name">Upvotes</span>
+            <span class="type-desc">Boost post score</span>
+          </button>
+          <button class="type-btn" id="btn-comments" onclick="selectType('comments')" type="button">
+            <i class="ti ti-message-circle type-icon" aria-hidden="true"></i>
+            <span class="type-name">Comments</span>
+            <span class="type-desc">Add engagement</span>
+          </button>
+        </div>
+        <span class="field-error" id="err-type"></span>
+      </div>
+
+      <!-- Upvotes panel -->
+      <div class="fields-panel" id="panel-upvotes">
+        <div class="field-group">
+          <label class="field-label" for="upvote-amount">Number of upvotes</label>
+          <input class="field-input" id="upvote-amount" type="number" min="1" placeholder="e.g. 500" oninput="updatePrice()">
+          <span class="field-error" id="err-upvote-amount"></span>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Upvote speed <span style="font-weight:400;text-transform:none;letter-spacing:0">(per hour)</span></label>
+          <div class="speed-row">
+            <input type="range" id="upvote-speed" min="1" max="160" value="20" step="1"
+              oninput="document.getElementById('speed-val').textContent = this.value + '/hr'">
+            <span class="speed-value" id="speed-val">20/hr</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comments panel -->
+      <div class="fields-panel" id="panel-comments">
+        <div class="field-group">
+          <label class="field-label" for="comment-text">Comment text</label>
+          <textarea class="field-input" id="comment-text" oninput="updatePrice()"
+            placeholder="Write the comment to post..."></textarea>
+          <span class="field-error" id="err-comment-text"></span>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Price estimate -->
+      <div class="price-card">
+        <span class="price-label">Total</span>
+        <span class="price-value" id="price-display">—</span>
+      </div>
+
+      <div class="success-banner" id="success-banner">
+        <i class="ti ti-circle-check" aria-hidden="true"></i> Order submitted successfully!
+      </div>
+    </div><!-- /screen-order -->
+
+  </div><!-- /card -->
 
   <script>
-    // Telegram Mini App setup (safe to call even outside Telegram)
+    // ── Telegram Mini App setup ──────────────────────────────────
     const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.ready();
       tg.expand();
-      tg.MainButton.setText("Send order");
-      tg.MainButton.show();
-      tg.MainButton.onClick(submitOrder);
     }
 
+    // ── State ────────────────────────────────────────────────────
     let currentType = null;
+    let loggedInUser = null;
 
+    // ── Password toggle ──────────────────────────────────────────
+    function togglePassword() {
+      const input = document.getElementById('login-password');
+      const icon  = document.getElementById('pw-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'ti ti-eye-off';
+      } else {
+        input.type = 'password';
+        icon.className = 'ti ti-eye';
+      }
+    }
+
+    // ── Login ────────────────────────────────────────────────────
+    async function doLogin() {
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value;
+      let invalid = false;
+
+      document.getElementById('login-error').style.display = 'none';
+
+      if (!username) {
+        document.getElementById('err-login-username').textContent = 'Please enter your username.';
+        document.getElementById('login-username').classList.add('error');
+        invalid = true;
+      } else {
+        document.getElementById('err-login-username').textContent = '';
+        document.getElementById('login-username').classList.remove('error');
+      }
+
+      if (!password) {
+        document.getElementById('err-login-password').textContent = 'Please enter your password.';
+        document.getElementById('login-password').classList.add('error');
+        invalid = true;
+      } else {
+        document.getElementById('err-login-password').textContent = '';
+        document.getElementById('login-password').classList.remove('error');
+      }
+
+      if (invalid) return;
+
+      const btn = document.getElementById('login-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="ti ti-loader-2"></i> Signing in…';
+
+      try {
+        // Replace with your actual auth endpoint if needed.
+        // Here we fetch the balance using credentials; if the server
+        // returns a 401/403 we treat it as a failed login.
+        const res = await fetch('http://167.71.143.220:5000/payments/get-balance', {
+          method: 'POST',
+          headers: {
+            'X-API-KEY': password
+          },
+          body: JSON.stringify({
+            "client_name": username
+          })
+        });
+
+        const data = await res.json();
+        console.log(`${JSON.stringify(data)}`)
+        if (data.status !== 'ok') {
+          throw new Error('auth_failed');
+        }
+
+        loggedInUser = username;
+
+        // Pre-fill client name
+        document.getElementById('client-name').value = username;
+
+        // Show balance
+        renderBalance(data.balance ?? -1);
+
+        // Switch screens
+        document.getElementById('screen-login').classList.remove('active');
+        document.getElementById('screen-order').classList.add('active');
+
+        // Telegram main button
+        if (tg) {
+          tg.MainButton.setText('Send order');
+          tg.MainButton.show();
+          tg.MainButton.onClick(submitOrder);
+        }
+
+      } catch (err) {
+        const errEl = document.getElementById('login-error');
+        const msgEl = document.getElementById('login-error-msg');
+        msgEl.textContent = err.message === 'auth_failed'
+          ? 'Invalid username or password.'
+          : 'Could not connect to the server. Try again.';
+        errEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="ti ti-login"></i> Sign in';
+      }
+    }
+
+    // Allow pressing Enter in password field to submit
+    document.getElementById('login-password').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+    document.getElementById('login-username').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('login-password').focus();
+    });
+
+    // ── Balance ──────────────────────────────────────────────────
+    function renderBalance(value) {
+      const el = document.getElementById('balance-display');
+      el.classList.remove('loading');
+      if (value === null || value === undefined) {
+        el.textContent = 'N/A';
+      } else {
+        const num = parseFloat(value);
+        el.textContent = isNaN(num) ? String(value) : '$' + num.toFixed(2);
+      }
+    }
+
+    // ── Order type ───────────────────────────────────────────────
     function selectType(type) {
       currentType = type;
       ['upvotes', 'comments'].forEach(t => {
@@ -395,6 +677,7 @@
       }
     }
 
+    // ── Validation helpers ───────────────────────────────────────
     function isValidRedditUrl(url) {
       return /^https?:\/\/(www\.)?reddit\.com\/r\/[^\/]+\/comments\/[a-z0-9]+/i.test(url);
     }
@@ -408,6 +691,7 @@
       return !!msg;
     }
 
+    // ── Submit order ─────────────────────────────────────────────
     function submitOrder() {
       let invalid = false;
 
@@ -433,13 +717,13 @@
 
       const payload = {
         client_name: document.getElementById('client-name').value.trim(),
-        post_link: document.getElementById('post-url').value.trim(),
-        type: currentType,
+        post_link:   document.getElementById('post-url').value.trim(),
+        type:        currentType,
       };
 
       if (currentType === 'upvotes') {
-        payload.target_upvotes    = parseInt(document.getElementById('upvote-amount').value);
-        payload.upvotes_per_hour  = parseInt(document.getElementById('upvote-speed').value);
+        payload.target_upvotes   = parseInt(document.getElementById('upvote-amount').value);
+        payload.upvotes_per_hour = parseInt(document.getElementById('upvote-speed').value);
       } else {
         const lines = document.getElementById('comment-text').value.split('\n').length;
         payload.target_comments = lines;
