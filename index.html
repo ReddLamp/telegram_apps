@@ -671,7 +671,7 @@
         el.textContent = amt > 0 ? '$' + (amt * 0.01).toFixed(2) : '—';
       } else if (currentType === 'comments') {
         const lines = document.getElementById('comment-text').value.split('\n').length;
-        el.textContent = lines > 0 ? '$' + (lines * 0.1).toFixed(2) : '—';
+        el.textContent = lines > 0 ? '$' + (lines * 1).toFixed(2) : '—';
       } else {
         el.textContent = '—';
       }
