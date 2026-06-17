@@ -670,7 +670,7 @@
         const amt = parseInt(document.getElementById('upvote-amount').value) || 0;
         el.textContent = amt > 0 ? '$' + (amt * 0.01).toFixed(2) : '—';
       } else if (currentType === 'comments') {
-        const lines = document.getElementById('comment-text').value.split('\n').length;
+        const lines = document.getElementById('comment-text').value.split('/').length;
         el.textContent = lines > 0 ? '$' + (lines * 1).toFixed(2) : '—';
       } else {
         el.textContent = '—';
@@ -725,7 +725,7 @@
         payload.target_upvotes   = parseInt(document.getElementById('upvote-amount').value);
         payload.upvotes_per_hour = parseInt(document.getElementById('upvote-speed').value);
       } else {
-        const lines = document.getElementById('comment-text').value.split('\n').length;
+        const lines = document.getElementById('comment-text').value.split('/').length;
         payload.target_comments = lines;
         payload.comment_text    = document.getElementById('comment-text').value.trim();
       }
