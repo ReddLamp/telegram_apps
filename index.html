@@ -740,8 +740,10 @@
 
       if (currentType === 'comments') {
         const txt = document.getElementById('comment-text').value.trim();
-        console.log(`Comment text: ${txt}`);
-        invalid |= setErr('err-comment-text', txt ? '' : 'Provide comment text or instructions.');
+        const r = setErr('err-comment-text', txt ? '' : 'Provide comment text or instructions.');
+        console.log(`Comment text: ${txt}, setErr: ${r}`);
+        
+        invalid |= r;
       }
 
       if (invalid) {
