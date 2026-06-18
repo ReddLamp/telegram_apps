@@ -522,8 +522,21 @@
       <div class="fields-panel" id="panel-comments">
         <div class="field-group">
           <label class="field-label" for="comment-text">Comment text</label>
+
+          <!-- Toggle -->
+          <label style="display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;font-size:13px;color:var(--text-secondary)">
+            <input type="checkbox" id="multi-comments-toggle" onchange="toggleMultiComments()">
+            Multiple comments
+          </label>
+
+          <!-- Single comment: URL field -->
+          <div id="single-comment-url">
+            <label class="field-label" for="post-url">Reddit post URL</label>
+            <input class="field-input" id="post-url" type="text" placeholder="https://reddit.com/r/…/comments/…">
+          </div>
+
           <textarea class="field-input" id="comment-text" oninput="updatePrice()"
-            placeholder="> [link]&#10;[Comment]&#10;> [link 2]&#10;[Comment 2]"></textarea>
+            placeholder="Write the comment or separate multiple typing /..." style="margin-top:10px"></textarea>
           <span class="field-error" id="err-comment-text"></span>
         </div>
       </div>
@@ -572,6 +585,7 @@
       }
     }
 
+    let multiple_comments = false;
     let password = "";
     let username = "";
     // ── Login ────────────────────────────────────────────────────
@@ -762,36 +776,43 @@
         payload.upvotes_per_hour = parseInt(document.getElementById('upvote-speed').value);
 
         await submitData(payload);
-      } else {
+      } else if (currentType === 'comments') {
         // Get the links and comments
-        
-        const chunks = document.getElementById('comment-text').value.split('>').slice(1);
-        console.log(`${chunks.length} comments detected`);
-        const comments = chunks.map(chunk => {
-          const lines = chunk.split('\n');
-          const link = lines[0].trim();
-          const text = lines.slice(1).join('\n').trim();
-          return { link, text };
-        });
-        console.log(`Comments length: ${comments.length}`);
-        const missing = comments.find(c => !c.link || !c.text);
-        if (missing) {
-          console.log(`A comment doesn't have all the necessary attributes: ${JSON.stringify(comments)}`)
-          invalid |= setErr('err-comment-text', 'Each comment entry needs both a link and reply text.');
-          return;
-        }
-
         payload.target_comments = 1;
 
-        for (let i = 0; i < comments.length; i++) {
-          payload.post_link = extractRedditPostId(comments[i].link)
-          payload.comment_text = comments[i].text;
-          console.log(`Submiting data for ${comments[i].link}, comment: ${comments[i].text}`)
+        if (multiple_comments){ // Send multiple comments
+          const chunks = document.getElementById('comment-text').value.split('>').slice(1);
+          console.log(`${chunks.length} comments detected`);
+          const comments = chunks.map(chunk => {
+            const lines = chunk.split('\n');
+            const link = lines[0].trim();
+            const text = lines.slice(1).join('\n').trim();
+            return { link, text };
+          });
+          console.log(`Comments length: ${comments.length}`);
+          const missing = comments.find(c => !c.link || !c.text);
+          if (missing) {
+            console.log(`A comment doesn't have all the necessary attributes: ${JSON.stringify(comments)}`)
+            invalid |= setErr('err-comment-text', 'Each comment entry needs both a link and reply text.');
+            return;
+          }
+          for (let i = 0; i < comments.length; i++) {
+            payload.post_link = extractRedditPostId(comments[i].link)
+            payload.comment_text = comments[i].text;
+            console.log(`Submiting data for ${comments[i].link}, comment: ${comments[i].text}`)
+            await submitData(payload);
+          }
+        }
+        else { // Send only one comment
+          const text = document.getElementById('comment-text').value;
+          const url = document.getElementById('single-comment-url');
+
+          payload.post_link = extractRedditPostId(url);
+          payload.comment_text = text;
+
           await submitData(payload);
         }
-      }
-
-      
+      }  
     }
 
     inputElement.addEventListener('keydown', (e) => {
@@ -801,12 +822,14 @@
 
     async function submitData(payload){
       try {
+          payload_json = JSON.stringify(payload);
+          console.log(`Submiting data: ${payload_json}`);
           const res = await fetch('https://sir-compensation-inexpensive-classes.trycloudflare.com/register/upvote/order', {
             method: 'POST',
             headers: {
               'X-API-KEY': password
             },
-            body: JSON.stringify(payload)
+            body: payload_json
           });
 
           const data = await res.json();
@@ -823,7 +846,20 @@
           console.error('Telegram sendData error:', e);
         }
     }
-      
+    
+    
+    function toggleMultiComments() {
+      const multi = document.getElementById('multi-comments-toggle').checked;
+      multiple_comments = multi;
+      document.getElementById('single-comment-url').style.display = multi ? 'none' : 'block';
+      console.log(multi);
+      if (multi) {
+        document.getElementById('comment-text').placeholder = "> [link]\n[Comment]\n> [link 2]\n[Comment 2]";
+      }
+      else {
+        document.getElementById('comment-text').placeholder = "Write the comment or separate multiple typing /...";
+      }
+    }
   </script>
 
 </body>
