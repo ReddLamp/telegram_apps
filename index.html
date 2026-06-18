@@ -777,9 +777,10 @@
         orders_num = lines.length;
         payload.target_comments = 1;
 
-        for (let i = 0; i < orders_num; i++) {
-          payload.post_link = extractRedditPostId(comments.link)
-          payload.comment_text = comments.text;
+        for (let i = 0; i < comments.length; i++) {
+          payload.post_link = extractRedditPostId(comments[i].link)
+          payload.comment_text = comments[i].text;
+          console.log(`Submiting data for ${post_link}, comment: ${comments[i].text}`)
           await submitData(payload);
         }
       }
