@@ -758,13 +758,15 @@
         console.log(`${JSON.stringify(data)}`)
         if (data.status !== 'ok') {
           throw new Error('Register order failed');
+          document.getElementById('error-banner').style.display = 'block';
+        }
+        else {
+          document.getElementById('success-banner').style.display = 'block';
         }
         //if (tg) tg.sendData(JSON.stringify(payload));
       } catch (e) {
         console.error('Telegram sendData error:', e);
       }
-
-      document.getElementById('success-banner').style.display = 'block';
     }
   </script>
 
