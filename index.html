@@ -778,6 +778,7 @@
         console.log(`Comments length: ${comments.length}`);
         const missing = comments.find(c => !c.link || !c.text);
         if (missing) {
+          console.log(`A comment doesn't have all the necessary attributes: ${JSON.stringify(comments)}`)
           invalid |= setErr('err-comment-text', 'Each comment entry needs both a link and reply text.');
           return;
         }
