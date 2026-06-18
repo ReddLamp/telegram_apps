@@ -354,6 +354,17 @@
       margin-top: 1rem;
       text-align: center;
     }
+    .error-banner {
+      display: none;
+      background: var(--bg-info);
+      border: 0.5px solid var(--border-danger);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--text-danger);
+      margin-top: 1rem;
+      text-align: center;
+    }
 
     /* ── LOGIN ERROR BANNER ── */
     .login-error {
@@ -520,6 +531,10 @@
       <div class="success-banner" id="success-banner">
         <i class="ti ti-circle-check" aria-hidden="true"></i> Order submitted successfully!
       </div>
+
+      <div class="error-banner" id="error-banner">
+        <i class="ti ti-circle-check" aria-hidden="true"></i> Failed to submit the order
+      </div>
     </div><!-- /screen-order -->
 
   </div><!-- /card -->
@@ -617,7 +632,7 @@
         if (tg) {
           tg.MainButton.setText('Send order');
           tg.MainButton.show();
-          tg.MainButton.onClick(submitOrder);
+          tg.MainButton.onClick(await submitOrder);
         }
 
       } catch (err) {
@@ -692,7 +707,7 @@
     }
 
     // ── Submit order ─────────────────────────────────────────────
-    function submitOrder() {
+    async function submitOrder() {
       let invalid = false;
 
       const name = document.getElementById('client-name').value.trim();
@@ -731,7 +746,20 @@
       }
 
       try {
-        if (tg) tg.sendData(JSON.stringify(payload));
+        const res = await fetch('https://sir-compensation-inexpensive-classes.trycloudflare.com/register/upvote/order', {
+          method: 'POST',
+          headers: {
+            'X-API-KEY': password
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        console.log(`${JSON.stringify(data)}`)
+        if (data.status !== 'ok') {
+          throw new Error('Register order failed');
+        }
+        //if (tg) tg.sendData(JSON.stringify(payload));
       } catch (e) {
         console.error('Telegram sendData error:', e);
       }
