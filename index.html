@@ -767,7 +767,7 @@
           const text = lines.slice(1).join('\n').trim();
           return { link, text };
         });
-
+        console.log(`Comments length: ${comments.length}`);
         const missing = comments.find(c => !c.link || !c.text);
         if (missing) {
           invalid |= setErr('err-comment-text', 'Each comment entry needs both a link and reply text.');
