@@ -728,12 +728,11 @@
       const name = document.getElementById('client-name').value.trim();
       invalid |= setErr('err-name', name ? '' : 'Please enter a client name.');
 
-      const url = document.getElementById('post-url').value.trim();
-      invalid |= setErr('err-url', isValidRedditUrl(url) ? '' : 'Enter a valid Reddit post URL.');
-
       invalid |= setErr('err-type', currentType ? '' : 'Select an order type.');
 
       if (currentType === 'upvotes') {
+        const url = document.getElementById('post-url').value.trim();
+        invalid |= setErr('err-url', isValidRedditUrl(url) ? '' : 'Enter a valid Reddit post URL.');
         const amt = parseInt(document.getElementById('upvote-amount').value);
         invalid |= setErr('err-upvote-amount', amt > 0 ? '' : 'Enter a valid number of upvotes.');
       }
