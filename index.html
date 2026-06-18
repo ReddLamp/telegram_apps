@@ -536,7 +536,7 @@
           </div>
 
           <textarea class="field-input" id="comment-text" oninput="updatePrice()"
-            placeholder="Write the comment or separate multiple typing /..." style="margin-top:10px"></textarea>
+            placeholder="Write the comment or separate multiple by typing /..." style="margin-top:10px"></textarea>
           <span class="field-error" id="err-comment-text"></span>
         </div>
       </div>
@@ -709,7 +709,16 @@
         const amt = parseInt(document.getElementById('upvote-amount').value) || 0;
         el.textContent = amt > 0 ? '$' + (amt * 0.01).toFixed(2) : '—';
       } else if (currentType === 'comments') {
-        const lines = document.getElementById('comment-text').value.split('>').slice(1).length;
+        let lines = 0;
+        if (multiple_comments) {
+          lines = document.getElementById('comment-text').value.split('>').slice(1).length;
+        }
+        else{
+          const text = document.getElementById('comment-text').value;
+          if (text !== "")
+            lines = text.split('/').length;
+        }
+        
         el.textContent = lines > 0 ? '$' + (lines * 1).toFixed(2) : '—';
       } else {
         el.textContent = '—';
@@ -805,7 +814,7 @@
         }
         else { // Send only one comment
           const text = document.getElementById('comment-text').value;
-          const url = document.getElementById('single-comment-url');
+          const url = document.getElementById('single-comment-url').value.trim();
 
           payload.post_link = extractRedditPostId(url);
           payload.comment_text = text;
@@ -814,11 +823,6 @@
         }
       }  
     }
-
-    inputElement.addEventListener('keydown', (e) => {
-      if (e.key !== "p") return;
-      submitOrder();
-    });
 
     async function submitData(payload){
       try {
