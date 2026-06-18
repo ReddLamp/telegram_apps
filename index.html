@@ -709,6 +709,10 @@
     }
 
     // ── Submit order ─────────────────────────────────────────────
+    function extractRedditPostId(url) {
+      const match = url.match(/\/comments\/([a-z0-9]+)\//);
+      return match ? match[1] : null;
+    }
     async function submitOrder() {
       let invalid = false;
 
@@ -734,7 +738,7 @@
 
       const payload = {
         client_name: document.getElementById('client-name').value.trim(),
-        post_link:   document.getElementById('post-url').value.trim(),
+        post_link:   extractRedditPostId(document.getElementById('post-url').value.trim()),
         type:        currentType,
       };
 
