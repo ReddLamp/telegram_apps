@@ -564,10 +564,12 @@
       }
     }
 
+    let password = "";
+    let username = "";
     // ── Login ────────────────────────────────────────────────────
     async function doLogin() {
-      const username = document.getElementById('login-username').value.trim();
-      const password = document.getElementById('login-password').value;
+      username = document.getElementById('login-username').value.trim();
+      password = document.getElementById('login-password').value;
       let invalid = false;
 
       document.getElementById('login-error').style.display = 'none';
