@@ -471,13 +471,7 @@
         <span class="field-error" id="err-name"></span>
       </div>
 
-      <!-- Post URL -->
-      <div class="field-group">
-        <label class="field-label" for="post-url">Reddit post URL</label>
-        <input class="field-input" id="post-url" type="text" placeholder="https://reddit.com/r/…/comments/…">
-        <span class="url-hint">Must be a valid reddit.com/r/… post link</span>
-        <span class="field-error" id="err-url"></span>
-      </div>
+      
 
       <hr class="divider">
 
@@ -501,6 +495,13 @@
 
       <!-- Upvotes panel -->
       <div class="fields-panel" id="panel-upvotes">
+        <!-- Post URL -->
+        <div class="field-group">
+          <label class="field-label" for="post-url">Reddit post URL</label>
+          <input class="field-input" id="post-url" type="text" placeholder="https://reddit.com/r/…/comments/…">
+          <span class="url-hint">Must be a valid reddit.com/r/… post link</span>
+          <span class="field-error" id="err-url"></span>
+        </div>
         <div class="field-group">
           <label class="field-label" for="upvote-amount">Number of upvotes</label>
           <input class="field-input" id="upvote-amount" type="number" min="1" placeholder="e.g. 500" oninput="updatePrice()">
@@ -695,7 +696,7 @@
         const amt = parseInt(document.getElementById('upvote-amount').value) || 0;
         el.textContent = amt > 0 ? '$' + (amt * 0.01).toFixed(2) : '—';
       } else if (currentType === 'comments') {
-        const lines = document.getElementById('comment-text').value.split('/').length;
+        const lines = document.getElementById('comment-text').value.split('>').length;
         el.textContent = lines > 0 ? '$' + (lines * 1).toFixed(2) : '—';
       } else {
         el.textContent = '—';
@@ -746,42 +747,71 @@
 
       const payload = {
         client_name: document.getElementById('client-name').value.trim(),
-        post_link:   extractRedditPostId(document.getElementById('post-url').value.trim()),
         type:        currentType,
       };
+      let orders_num = 1;
 
       if (currentType === 'upvotes') {
+        payload.post_link = extractRedditPostId(document.getElementById('post-url').value.trim());
         payload.target_upvotes   = parseInt(document.getElementById('upvote-amount').value);
         payload.upvotes_per_hour = parseInt(document.getElementById('upvote-speed').value);
-      } else {
-        const lines = document.getElementById('comment-text').value.split('/').length;
-        payload.target_comments = lines;
-        payload.comment_text    = document.getElementById('comment-text').value.trim();
-      }
 
-      try {
-        const res = await fetch('https://sir-compensation-inexpensive-classes.trycloudflare.com/register/upvote/order', {
-          method: 'POST',
-          headers: {
-            'X-API-KEY': password
-          },
-          body: JSON.stringify(payload)
+        await submitData(payload);
+      } else {
+        // Get the links and comments
+        const lines = document.getElementById('comment-text').value.split('>');
+
+        const comments = chunks.map(chunk => {
+          const lines = chunk.split('\n');
+          const link = lines[0].trim();
+          const text = lines.slice(1).join('\n').trim();
+          return { link, text };
         });
 
-        const data = await res.json();
-        console.log(`${JSON.stringify(data)}`)
-        if (data.status !== 'ok') {
-          throw new Error('Register order failed');
-          document.getElementById('error-banner').style.display = 'block';
+        const missing = comments.find(c => !c.link || !c.text);
+        if (missing) {
+          invalid |= setErr('err-comment-text', 'Each comment entry needs both a link and reply text.');
+          return;
         }
-        else {
-          document.getElementById('success-banner').style.display = 'block';
+
+        orders_num = lines.length;
+        payload.target_comments = 1;
+
+        for (let i = 0; i < orders_num; i++) {
+          payload.post_link = extractRedditPostId(comments.link)
+          payload.comment_text = comments.text;
+          await submitData(payload);
         }
-        //if (tg) tg.sendData(JSON.stringify(payload));
-      } catch (e) {
-        console.error('Telegram sendData error:', e);
       }
+
+      
     }
+
+    async function submitData(payload){
+      try {
+          const res = await fetch('https://sir-compensation-inexpensive-classes.trycloudflare.com/register/upvote/order', {
+            method: 'POST',
+            headers: {
+              'X-API-KEY': password
+            },
+            body: JSON.stringify(payload)
+          });
+
+          const data = await res.json();
+          console.log(`${JSON.stringify(data)}`)
+          if (data.status !== 'ok') {
+            throw new Error('Register order failed');
+            document.getElementById('error-banner').style.display = 'block';
+          }
+          else {
+            document.getElementById('success-banner').style.display = 'block';
+          }
+          //if (tg) tg.sendData(JSON.stringify(payload));
+        } catch (e) {
+          console.error('Telegram sendData error:', e);
+        }
+    }
+      
   </script>
 
 </body>
