@@ -788,6 +788,11 @@
       
     }
 
+    inputElement.addEventListener('keydown', (e) => {
+      if (e.key !== "p") return;
+      submitOrder();
+    });
+
     async function submitData(payload){
       try {
           const res = await fetch('https://sir-compensation-inexpensive-classes.trycloudflare.com/register/upvote/order', {
