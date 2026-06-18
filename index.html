@@ -754,7 +754,6 @@
         client_name: document.getElementById('client-name').value.trim(),
         type:        currentType,
       };
-      let orders_num = 1;
 
       console.log(`Start payload: ${JSON.stringify(payload)}`);
 
@@ -767,7 +766,7 @@
       } else {
         // Get the links and comments
         
-        const chunks = document.getElementById('comment-text').value.split('>');
+        const chunks = document.getElementById('comment-text').value.split('>').slice(1);
         console.log(`${chunks.length} comments detected`);
         const comments = chunks.map(chunk => {
           const lines = chunk.split('\n');
@@ -783,13 +782,12 @@
           return;
         }
 
-        orders_num = lines.length;
         payload.target_comments = 1;
 
         for (let i = 0; i < comments.length; i++) {
           payload.post_link = extractRedditPostId(comments[i].link)
           payload.comment_text = comments[i].text;
-          console.log(`Submiting data for ${post_link}, comment: ${comments[i].text}`)
+          console.log(`Submiting data for ${comments[i].link}, comment: ${comments[i].text}`)
           await submitData(payload);
         }
       }
@@ -815,8 +813,8 @@
           const data = await res.json();
           console.log(`${JSON.stringify(data)}`)
           if (data.status !== 'ok') {
-            throw new Error('Register order failed');
             document.getElementById('error-banner').style.display = 'block';
+            throw new Error('Register order failed');
           }
           else {
             document.getElementById('success-banner').style.display = 'block';
