@@ -724,7 +724,7 @@
     }
     async function submitOrder() {
       let invalid = false;
-
+      console.log("Starting the submit process");
       const name = document.getElementById('client-name').value.trim();
       invalid |= setErr('err-name', name ? '' : 'Please enter a client name.');
 
@@ -743,13 +743,18 @@
         invalid |= setErr('err-comment-text', txt ? '' : 'Provide comment text or instructions.');
       }
 
-      if (invalid) return;
+      if (invalid) {
+        console.log("Invalid data, finishing process");
+        return;
+      }
 
       const payload = {
         client_name: document.getElementById('client-name').value.trim(),
         type:        currentType,
       };
       let orders_num = 1;
+
+      console.log(`Start payload: ${JSON.stringify(payload)}`);
 
       if (currentType === 'upvotes') {
         payload.post_link = extractRedditPostId(document.getElementById('post-url').value.trim());
@@ -759,8 +764,9 @@
         await submitData(payload);
       } else {
         // Get the links and comments
-        const lines = document.getElementById('comment-text').value.split('>');
-
+        
+        const chunks = document.getElementById('comment-text').value.split('>');
+        console.log(`${chunks.length} comments detected`);
         const comments = chunks.map(chunk => {
           const lines = chunk.split('\n');
           const link = lines[0].trim();
