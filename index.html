@@ -532,7 +532,8 @@
           <!-- Single comment: URL field -->
           <div id="single-comment-url">
             <label class="field-label" for="post-url">Reddit post URL</label>
-            <input class="field-input" id="post-url" type="text" placeholder="https://reddit.com/r/…/comments/…">
+            <input class="field-input" id="post-url-single-comment" type="text" placeholder="https://reddit.com/r/…/comments/…">
+            <span class="field-error" id="err-url-single-comment"></span>
           </div>
 
           <textarea class="field-input" id="comment-text" oninput="updatePrice()"
@@ -814,7 +815,8 @@
         }
         else { // Send only one comment
           const text = document.getElementById('comment-text').value;
-          const url = document.getElementById('single-comment-url').value.trim();
+          const url = document.getElementById('post-url-single-comment').value.trim();
+          invalid |= setErr('err-url-single-comment', isValidRedditUrl(url) ? '' : 'Enter a valid Reddit post URL.');
 
           payload.post_link = extractRedditPostId(url);
           payload.comment_text = text;
