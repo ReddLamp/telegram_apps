@@ -521,12 +521,16 @@
       <!-- Comments panel -->
       <div class="fields-panel" id="panel-comments">
         <div class="field-group">
-          <label class="field-label" for="comment-text">Comment text</label>
+          <label class="field-label" for="comment-text">Comment data</label>
 
-          <!-- Toggle -->
+          <!-- Toggles -->
           <label style="display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;font-size:13px;color:var(--text-secondary)">
             <input type="checkbox" id="multi-comments-toggle" onchange="toggleMultiComments()">
             Multiple comments
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;margin-bottom:20px;cursor:pointer;font-size:13px;color:var(--text-secondary)">
+            <input type="checkbox" id="reply-first-toggle" onchange="toggleMultiComments()">
+            Reply to first comment
           </label>
 
           <!-- Single comment: URL field -->
@@ -587,6 +591,7 @@
     }
 
     let multiple_comments = false;
+    let reply_first = false;
     let password = "";
     let username = "";
     // ── Login ────────────────────────────────────────────────────
@@ -786,11 +791,13 @@
         payload.upvotes_per_hour = parseInt(document.getElementById('upvote-speed').value);
 
         await submitData(payload);
-      } else if (currentType === 'comments') {
-        // Get the links and comments
+      } else if (currentType === 'comments') { // Get the links and comments
+        // Store the basic comment information
         payload.target_comments = 1;
+        payload.comment_directly = reply_first;
 
-        if (multiple_comments){ // Send multiple comments
+        // Send multiple comments
+        if (multiple_comments){
           const chunks = document.getElementById('comment-text').value.split('>').slice(1);
           console.log(`${chunks.length} comments detected`);
           const comments = chunks.map(chunk => {
@@ -817,6 +824,7 @@
           const text = document.getElementById('comment-text').value;
           const url = document.getElementById('post-url-single-comment').value.trim();
           invalid |= setErr('err-url-single-comment', isValidRedditUrl(url) ? '' : 'Enter a valid Reddit post URL.');
+          if (invalid) return;
 
           payload.post_link = extractRedditPostId(url);
           payload.comment_text = text;
@@ -854,6 +862,10 @@
     }
     
     
+    function toggleReplyFirstComment() {
+      const reply_first_toggle = document.getElementById("reply-first-toggle").checked;
+      reply_first = reply_first_toggle;
+    }
     function toggleMultiComments() {
       const multi = document.getElementById('multi-comments-toggle').checked;
       multiple_comments = multi;
